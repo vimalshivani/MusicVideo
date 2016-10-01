@@ -12,7 +12,7 @@ class APIManager
 {
     
     
-    func loadData(url: String, completion: (String) -> Void)
+    func loadData(url: String, completion: [MusicVideo] -> Void)
     {
         //let session = NSURLSession.sharedSession()
         
@@ -28,10 +28,10 @@ class APIManager
             
                     if(error != nil)
                     {
-                        dispatch_async(dispatch_get_main_queue())
+                       /* dispatch_async(dispatch_get_main_queue())
                         {
                             completion(error!.localizedDescription)
-                        }
+                        }*/
                     }
                     else
                     {
@@ -44,9 +44,25 @@ class APIManager
                         
                            
                         
-                        if let json = try NSJSONSerialization.JSONObjectWithData(data!, options: .AllowFragments) as? [String:AnyObject]
-                            {
-                                print(json)
+                        if let json = try NSJSONSerialization.JSONObjectWithData(data!, options: .AllowFragments) as? NSJSONDictionary, feed = json["feed"] as? NSJSONDictionary, entries = feed["entry"] as? NSJSONArray
+                               {
+                                
+                                    var videos = [MusicVideo]()
+                                
+                                    for entry in entries
+                                    {
+                                        let video = MusicVideo(data: entry as! NSJSONDictionary)
+                                        videos.append(video)
+                                    }
+                                    let i = videos.count
+                                
+                                    print("ITunes Manager api count \(i)")
+                                
+                                
+                                
+                            
+                            
+                                
                                 
                                 let priority = DISPATCH_QUEUE_PRIORITY_HIGH
                                 
@@ -54,22 +70,23 @@ class APIManager
                                 {
                                     dispatch_async(dispatch_get_main_queue())
                                     {
-                                        completion("Serialization successful")
+                                        completion(videos)
                                     }
                                     
                                 }
-                                
-                                
                             }
                             
+                                
                         }
+                            
+                        
                         
                         catch
                         {
-                            dispatch_async(dispatch_get_main_queue()) {
+                           /* dispatch_async(dispatch_get_main_queue()) {
                              
                                 completion("Error in NSJSonSerialization")
-                            }
+                            }*/
                         }
                         
                         
