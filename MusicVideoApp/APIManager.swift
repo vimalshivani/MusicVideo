@@ -26,20 +26,60 @@ class APIManager
         {
             (data,response,error) -> Void in
             
-                dispatch_async(dispatch_get_main_queue())
-                {
                     if(error != nil)
                     {
-                        completion(error!.localizedDescription)
+                        dispatch_async(dispatch_get_main_queue())
+                        {
+                            completion(error!.localizedDescription)
+                        }
                     }
                     else
                     {
-                        completion("URL Successful")
+                        //completion("URL Successful")
                         print(data!)
+                        
+                        do
+                        {
+                           
+                        
+                           
+                        
+                        if let json = try NSJSONSerialization.JSONObjectWithData(data!, options: .AllowFragments) as? [String:AnyObject]
+                            {
+                                print(json)
+                                
+                                let priority = DISPATCH_QUEUE_PRIORITY_HIGH
+                                
+                                dispatch_async(dispatch_get_global_queue(priority, 0))
+                                {
+                                    dispatch_async(dispatch_get_main_queue())
+                                    {
+                                        completion("Serialization successful")
+                                    }
+                                    
+                                }
+                                
+                                
+                            }
+                            
+                        }
+                        
+                        catch
+                        {
+                            dispatch_async(dispatch_get_main_queue()) {
+                             
+                                completion("Error in NSJSonSerialization")
+                            }
+                        }
+                        
+                        
                     }
                     
                     
-                }
+                    
+                    
+                    
+            
             
             
         }
