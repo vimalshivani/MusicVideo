@@ -12,5 +12,13 @@ typealias NSJSONDictionary = [String:AnyObject]
 
 typealias NSJSONArray = Array<AnyObject>
 
+let WIFI = "WIFI Available"
+
+let CELLULAR = "Mobile Network Available"
+
+let NONE = "No Network"
+
+
+
 
 

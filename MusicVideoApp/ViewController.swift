@@ -10,10 +10,17 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    @IBOutlet weak var displayLabel: UILabel!
     var _videos = [MusicVideo]()
+    
+    
 
      override func viewDidLoad() {
         super.viewDidLoad()
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "reachabilitystatuschanged", name: "ReachStatusChanged", object: nil)
+        
+        reachabilitystatuschanged()
        
        let api = APIManager()
         
@@ -25,10 +32,41 @@ class ViewController: UIViewController {
         
     }
     
+    func reachabilitystatuschanged()
+    {
+        switch reachibilityStatus {
+            
+        case WIFI :
+            
+            view.backgroundColor = UIColor.greenColor()
+            displayLabel.text = "WIFI"
+            
+        case CELLULAR:
+            
+            view.backgroundColor = UIColor.blueColor()
+            displayLabel.text = "Mobile"
+
+            
+        case NONE:
+            
+            view.backgroundColor = UIColor.redColor()
+            displayLabel.text = "No Internet"
+            
+        default:
+            
+            return
+
+            
+        }
+        
+    }
+    
     
     func didLoadData(videos : [MusicVideo])
     {
        // print(result)
+        
+        print(reachibilityStatus)
         
         self._videos =  videos
         
@@ -55,6 +93,12 @@ class ViewController: UIViewController {
         alert.addAction(action)
         
         self.presentViewController(alert, animated: true, completion: nil)*/
+    }
+    
+    deinit {
+        
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: "ReachStatusChanged", object: nil)
     }
     
     
